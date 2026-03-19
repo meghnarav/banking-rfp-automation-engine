@@ -2,10 +2,15 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}", // Check if your files are .jsx or .js
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bankBlue: '#00529b',
+        bankNavy: '#003d73',
+      }
+    },
   },
   plugins: [],
 }
