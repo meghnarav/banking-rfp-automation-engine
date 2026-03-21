@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   # The "Memory" of your Pro App
   postgres-db:
