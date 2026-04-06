@@ -1,13 +1,15 @@
 package com.bank.rfp.controller;
 
-import com.bank.rfp.service.IngestionService;
 import com.bank.rfp.service.DraftingService;
+import com.bank.rfp.service.IngestionService;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/rfp")
+@RequestMapping("/api/rfp")
+@CrossOrigin(origins = "http://localhost:3000") // Connects to your React Frontend
 public class RfpController {
 
     private final IngestionService ingestionService;
@@ -18,16 +20,14 @@ public class RfpController {
         this.draftingService = draftingService;
     }
 
-    // Step 1: Upload the bank documents to the Vector DB
-    @PostMapping("/ingest")
-    public String uploadPdf(@RequestParam("file") MultipartFile file) {
-        ingestionService.ingest(file.getResource());
-        return "Bank document indexed successfully!";
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadRfp(@RequestParam("file") MultipartFile file) {
+        ingestionService.ingest(file.getResource(), "Procurement");
+        return ResponseEntity.ok("Knowledge base updated with " + file.getOriginalFilename());
     }
 
-    // Step 2: Ask the AI to draft a section based on those documents
-    @GetMapping("/draft")
-    public String generateDraft(@RequestParam("prompt") String prompt) {
-        return draftingService.generateRfpSection(prompt);
+    @PostMapping("/generate")
+    public ResponseEntity<String> generate(@RequestBody String prompt) {
+        return ResponseEntity.ok(draftingService.generateRfpSection(prompt));
     }
 }
