@@ -1,16 +1,12 @@
 services:
-  # The "Memory" of your Pro App
-  postgres-db:
-    image: ankane/pgvector:latest
-    container_name: rfp_vector_db
+  db:
+    image: ankane/pgvector
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=rfp_vault
-      - POSTGRES_USER=banker
-      - POSTGRES_PASSWORD=secure_pass
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+      POSTGRES_DB: rfp_db
+      POSTGRES_PASSWORD: password
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"

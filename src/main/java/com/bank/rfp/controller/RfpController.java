@@ -1,33 +1,28 @@
 package com.bank.rfp.controller;
 
-import com.bank.rfp.service.DraftingService;
-import com.bank.rfp.service.IngestionService;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
+import com.bank.rfp.service.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/rfp")
-@CrossOrigin(origins = "http://localhost:3000") // Connects to your React Frontend
+@RequestMapping("/api")
+@CrossOrigin("*")
 public class RfpController {
+    private final IngestionService ingestion;
+    private final DraftingService drafting;
 
-    private final IngestionService ingestionService;
-    private final DraftingService draftingService;
-
-    public RfpController(IngestionService ingestionService, DraftingService draftingService) {
-        this.ingestionService = ingestionService;
-        this.draftingService = draftingService;
+    public RfpController(IngestionService i, DraftingService d) {
+        this.ingestion = i; this.drafting = d;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadRfp(@RequestParam("file") MultipartFile file) {
-        ingestionService.ingest(file.getResource(), "Procurement");
-        return ResponseEntity.ok("Knowledge base updated with " + file.getOriginalFilename());
+    public String upload(@RequestParam("file") MultipartFile file) {
+        ingestion.ingest(file.getResource());
+        return "File Ingested Locally.";
     }
 
-    @PostMapping("/generate")
-    public ResponseEntity<String> generate(@RequestBody String prompt) {
-        return ResponseEntity.ok(draftingService.generateRfpSection(prompt));
+    @PostMapping("/chat")
+    public String chat(@RequestBody String message) {
+        return drafting.generate(message);
     }
 }
